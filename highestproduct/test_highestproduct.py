@@ -1,4 +1,8 @@
+import random
+from itertools import combinations
+
 import pytest
+
 from highestproduct import highest_product
 
 
@@ -30,3 +34,14 @@ class TestHighestProduct:
     def test_long_input(self):
         numbers = [6, 5, 10] + [1, 2] * 350
         assert highest_product(numbers) == 300
+
+    def test_very_long_input(self):
+        numbers = [6, 5, 10] + [1, 2] * 350 + [-10, -5] * 1000
+        assert highest_product(numbers) == -10 * -10 * 10
+
+    def test_random_inputs(self):
+        def naive_implementation(numbers):
+            return max(a * b * c for (a, b, c) in combinations(numbers, 3))
+        for _ in range(100):
+            nums = random.sample(range(-100, 100), 20)
+            assert naive_implementation(nums) == highest_product(nums)
