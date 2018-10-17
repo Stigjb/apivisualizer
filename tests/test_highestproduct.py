@@ -3,7 +3,7 @@ from itertools import combinations
 
 import pytest
 
-from highestproduct import highest_product
+from apivisualizer.highestproduct import highest_product
 
 
 class TestHighestProduct:
