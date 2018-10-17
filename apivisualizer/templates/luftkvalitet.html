@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% block title %}Hello{% endblock %}
+{% block content %}
+<h1>Luftkvalitet</h1>
+<p>Luftkvalitet den siste uka på en målestasjon.</p>
+<div>
+    <ul>
+        <li>
+            Stasjon: {{ station }}
+        </li>
+        <li>
+            Komponent: {{ component }}
+        </li>
+    </ul>
+    <table>
+        {% for record in observations %}
+        <tr>
+            <td>{{ record.date }}</td>
+            <td>{{ record.value }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}

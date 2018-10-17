@@ -1,8 +1,7 @@
 window.onload = () => {
     const resultDiv = document.getElementById("result");
-    const button = document.getElementById("button");
 
-    button.onclick = () => {
+    formAction = () => {
         resultDiv.innerHTML = "Calculating result ..."
         const body = new FormData(document.getElementById("numbers-input"));
         fetch('/_highest_product', {method: 'POST', body })

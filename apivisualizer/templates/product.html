@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+{% block title %}Hello{% endblock %}
+{% block scripts %}
+  <script src="{{ url_for('static', filename='main.js') }}"></script>
+{% endblock %}
+{% block content %}
+  <h1>Highest product of three integers</h1>
+  <p>Arithmetic as a service&trade;</p>
+  <div>
+    <p>Enter at least three integers in the input field below, separated by spaces.</p>
+    <form id="numbers-input" action="javascript:formAction();">
+      <input type="text" name="numbers" />
+      <button type="submit" id="button">Submit</button>
+    </form>
+    <div id="result"></div>
+  </div>
+{% endblock %}
