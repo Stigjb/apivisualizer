@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-{% block title %}Hello{% endblock %}
+{% block title %}Luftkvalitet{% endblock %}
 {% block scripts %}
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
   <script src="{{ url_for('static', filename='luftkvalitet.js') }}"></script>
@@ -8,9 +8,33 @@
 <h1>Luftkvalitet</h1>
 <p>Luftkvalitet i en nylig periode på en eller flere målestasjoner.</p>
 <form id='nilu-form' action='javascript:submitNiluForm();'>
-    <input type='date' name='startDate' id='startDate' />
-    <input type='date' name='endDate' id='endDate' />
-    <select name='station', id='station-select'></select>
+    <div class="input-container">
+        <label for="startDate">Fra og med dato</label>
+        <input type='date' name='startDate' id='startDate' />
+    </div>
+    <div class="input-container">
+        <label for="endDate">Til og med dato</label>
+        <input type='date' name='endDate' id='endDate' />
+    </div>
+    <div class="input-container">
+        <label for="station">Målestasjon</label>
+        <select name='station' id='station-select'></select>
+    </div>
+    <fieldset id='component-select'>
+        <legend>Forurensningskomponenter</legend>
+        <div class="checkbox-container">
+            <input type="checkbox" name='component[]' value="PM10" id="PM10" checked />
+            <label for="PM10">PM10</label>
+        </div>
+        <div class="checkbox-container">
+            <input type="checkbox" name='component[]' value="PM2.5" id="PM2.5" />
+            <label for="PM2.5">PM2.5</label>
+        </div>
+        <div class="checkbox-container">
+            <input type="checkbox" name='component[]' value="NO2" id="NO2" />
+            <label for="NO2">NO<sub>2</sub></label>
+        </div>
+    </fieldset>
     <input type='submit' />
 </form>
 <div>

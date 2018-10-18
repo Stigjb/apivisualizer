@@ -63,8 +63,9 @@ def _highest_product():
 
 @app.route('/_nilu_form', methods=['POST'])
 def _nilu_form():
+    print(request.form)
     station = request.form['station']
-    components = ['PM10']
+    components = request.form.getlist('component[]')
     start_date = date_from_isoformat(request.form['startDate'])
     end_date = date_from_isoformat(request.form['endDate'])
     end_date += dt.timedelta(days=1)

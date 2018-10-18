@@ -15,6 +15,11 @@ def get_areas():
     return [record['area'] for record in data]
 
 
+def get_components():
+    data = _fetch_data("/lookup/components")
+    return [record['component'] for record in data]
+
+
 def get_stations(area: Optional[str] = None):
     params = None
     if area is not None:

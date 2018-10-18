@@ -1,12 +1,24 @@
 /// <reference path="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js" />
 
-// Chart.defaults.elements.line.tension = 0;
+const lineDefaults = Chart.defaults.global.elements.line
+lineDefaults.tension = 0.2;
+lineDefaults.fill = false;
+
+const colors = ["#4e9a06", "#204a87", "#a40000"];
 
 const makeChart = (ctx, xs, ys) => {
+    let colorIter = colors.values();
     datasets = ys.map(component => {
-        return {label: component.component, data: component.values};
+        let col = colorIter.next().value;
+        return {
+            label: component.component,
+            data: component.values,
+            borderColor: col,
+            backgroundColor: col 
+        };
     });
         
+    console.log('Made new chart');
     return new Chart(ctx, {
         type: 'line',
         data: {
@@ -51,7 +63,7 @@ function initDateForm() {
 async function initStations() {
     let body = new FormData();
     body.append('area', 'Oslo');
-    fetch('/_nilu_stations', {method: 'POST', body})
+    return fetch('/_nilu_stations', {method: 'POST', body})
         .then(response => {
             if (!response.ok) {
                 throw Error(response.statusText);
@@ -73,6 +85,6 @@ async function initStations() {
 
 window.onload = async () => {
     initDateForm();
-    submitNiluForm();
     await initStations();
+    submitNiluForm();
 }
