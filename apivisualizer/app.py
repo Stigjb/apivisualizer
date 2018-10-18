@@ -3,7 +3,7 @@ import datetime as dt
 from flask import Flask, render_template, request, jsonify
 
 from apivisualizer.highestproduct import highest_product
-from apivisualizer.nilu import get_daily_mean
+from apivisualizer.nilu import get_daily_mean, get_stations
 
 app = Flask(__name__)
 
@@ -13,6 +13,10 @@ def _date_range(start_date: dt.date, end_date: dt.date):
     while next_date < end_date:
         yield next_date
         next_date = next_date + dt.timedelta(days=1)
+
+
+def date_from_isoformat(isostr):
+    return dt.datetime.strptime(isostr, '%Y-%m-%d').date()
 
 
 @app.route('/')
@@ -55,6 +59,33 @@ def _highest_product():
     except ValueError:
         return jsonify(error="Needs at least three integers")
     return jsonify(result=prod)
+
+
+@app.route('/_nilu_form', methods=['POST'])
+def _nilu_form():
+    station = request.form['station']
+    components = ['PM10']
+    start_date = date_from_isoformat(request.form['startDate'])
+    end_date = date_from_isoformat(request.form['endDate'])
+    end_date += dt.timedelta(days=1)
+
+    results = get_daily_mean(start_date, end_date, station, components)
+    xs = list(map(str, _date_range(start_date, end_date)))
+    ys = [
+        {
+            "component": component,
+            "values": results[component]
+        }
+        for component in components
+    ]
+
+    return jsonify(xs=xs, ys=ys)
+
+
+@app.route('/_nilu_stations', methods=['POST'])
+def _nilu_stations():
+    area = request.form['area']
+    return jsonify(stations=get_stations(area))
 
 
 if __name__ == '__main__':

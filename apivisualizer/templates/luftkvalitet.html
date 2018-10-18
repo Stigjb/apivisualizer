@@ -1,24 +1,19 @@
 {% extends "layout.html" %}
 {% block title %}Hello{% endblock %}
+{% block scripts %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+  <script src="{{ url_for('static', filename='luftkvalitet.js') }}"></script>
+{% endblock %}
 {% block content %}
 <h1>Luftkvalitet</h1>
-<p>Luftkvalitet den siste uka på en målestasjon.</p>
+<p>Luftkvalitet i en nylig periode på en eller flere målestasjoner.</p>
+<form id='nilu-form' action='javascript:submitNiluForm();'>
+    <input type='date' name='startDate' id='startDate' />
+    <input type='date' name='endDate' id='endDate' />
+    <select name='station', id='station-select'></select>
+    <input type='submit' />
+</form>
 <div>
-    <ul>
-        <li>
-            Stasjon: {{ station }}
-        </li>
-        <li>
-            Komponent: {{ component }}
-        </li>
-    </ul>
-    <table>
-        {% for record in observations %}
-        <tr>
-            <td>{{ record.date }}</td>
-            <td>{{ record.value }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+    <canvas id="chart"></canvas>
 </div>
 {% endblock %}
