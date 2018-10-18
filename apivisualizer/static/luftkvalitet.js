@@ -1,5 +1,7 @@
 /// <reference path="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js" />
 
+// Chart.defaults.elements.line.tension = 0;
+
 const makeChart = (ctx, xs, ys) => {
     datasets = ys.map(component => {
         return {label: component.component, data: component.values};
@@ -11,7 +13,7 @@ const makeChart = (ctx, xs, ys) => {
             labels: xs,
             datasets
         }
-    })
+    });
 }
 
 function submitNiluForm() {
@@ -58,7 +60,7 @@ async function initStations() {
         })
         .then(result => {
             const select = document.getElementById('station-select');
-            select.firstChild.innerHTML = '';
+            select.innerHTML = '';
             result.stations.forEach(element => {
                 let opt = document.createElement('option');
                 opt.value = element;
@@ -72,5 +74,5 @@ async function initStations() {
 window.onload = async () => {
     initDateForm();
     submitNiluForm();
-    initStations();
+    await initStations();
 }
