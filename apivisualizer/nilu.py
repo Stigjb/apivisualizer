@@ -30,7 +30,9 @@ def get_stations(area: Optional[str] = None):
 
 def get_daily_mean(startdate: date, enddate: date, station: str, components: Iterable[str]):
     if enddate <= startdate:
-        raise ValueError('Start date must be before end date')
+        raise ValueError('Start date must be before end date.')
+    if not components:
+        raise ValueError('At least one component must passed.')
     params = {'components': ';'.join(components)}
     path_parts = [
         "/stats/day",

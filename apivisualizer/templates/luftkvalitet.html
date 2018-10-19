@@ -7,6 +7,7 @@
 {% block content %}
 <h1>Luftkvalitet</h1>
 <p>Luftkvalitet i en nylig periode på en eller flere målestasjoner.</p>
+<p>Datapunkter hvor døgnmiddelverdien overstiger timesnivåene for moderat helserisiko er markert med kryss.</p>
 <form id='nilu-form' action='javascript:submitNiluForm();'>
     <div class="input-container">
         <label for="startDate">Fra og med dato</label>
@@ -24,11 +25,11 @@
         <legend>Forurensningskomponenter</legend>
         <div class="checkbox-container">
             <input type="checkbox" name='component[]' value="PM10" id="PM10" checked />
-            <label for="PM10">PM10</label>
+            <label for="PM10">PM<sub>10</sub></label>
         </div>
         <div class="checkbox-container">
             <input type="checkbox" name='component[]' value="PM2.5" id="PM2.5" />
-            <label for="PM2.5">PM2.5</label>
+            <label for="PM2.5">PM<sub>2,5</sub></label>
         </div>
         <div class="checkbox-container">
             <input type="checkbox" name='component[]' value="NO2" id="NO2" />
@@ -37,7 +38,6 @@
     </fieldset>
     <input type='submit' />
 </form>
-<div>
-    <canvas id="chart"></canvas>
-</div>
+<div id="error-msg"></div>
+<div><canvas id="chart"></canvas></div>
 {% endblock %}

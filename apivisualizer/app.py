@@ -70,14 +70,20 @@ def _nilu_form():
     end_date = date_from_isoformat(request.form['endDate'])
     end_date += dt.timedelta(days=1)
 
-    results = get_daily_mean(start_date, end_date, station, components)
-    xs = list(map(str, _date_range(start_date, end_date)))
+    try:
+        results = get_daily_mean(start_date, end_date, station, components)
+    except ValueError as err:
+        return str(err), 400
+    result_components = list(results.keys())
+    if not result_components:
+        return 'No data found for query', 204
+    xs = [str(d) for d in _date_range(start_date, end_date)]
     ys = [
         {
             "component": component,
             "values": results[component]
         }
-        for component in components
+        for component in result_components
     ]
 
     return jsonify(xs=xs, ys=ys)
