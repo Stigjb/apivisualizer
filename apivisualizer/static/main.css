@@ -27,5 +27,5 @@ input[type="submit"] {
 }
 
 div#error-msg {
-    color: crimson;
+    color: #a40000;
 }

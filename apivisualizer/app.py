@@ -1,6 +1,6 @@
 import datetime as dt
 
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, redirect
 
 from apivisualizer.highestproduct import highest_product
 from apivisualizer.nilu import get_daily_mean, get_stations
@@ -13,13 +13,18 @@ def date_from_isoformat(isostr):
 
 
 @app.route('/')
-def hello_world():
-    return render_template('product.html')
+def index():
+    return redirect('/luftkvalitet')
 
 
 @app.route('/luftkvalitet')
 def luftkvalitet():
     return render_template('luftkvalitet.html')
+
+
+@app.route('/highest_product')
+def highest_product_page():
+    return render_template('product.html')
 
 
 @app.route('/_highest_product', methods=['POST'])
