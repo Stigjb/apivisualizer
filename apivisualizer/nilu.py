@@ -39,7 +39,7 @@ def get_daily_mean(start_date: dt.date, end_date: dt.date, station: str, compone
     if end_date <= start_date:
         raise ValueError('Start date must be before end date.')
     if not components:
-        raise ValueError('At least one component must passed.')
+        raise ValueError('At least one component must be passed.')
     params = {'components': ';'.join(components)}
     path_parts = [
         "/stats/day",

@@ -50,9 +50,11 @@ def _nilu_form():
     try:
         result = get_daily_mean(start_date, end_date, station, components)
     except ValueError as err:
-        return str(err), 400
+        print(err)
+        return jsonify(error=str(err))
     if not result['ys']:
-        return 'No data found for query', 204
+        print('no data found')
+        return jsonify(error='No data found for query')
 
     return jsonify(xs=result['xs'], ys=result['ys'])
 

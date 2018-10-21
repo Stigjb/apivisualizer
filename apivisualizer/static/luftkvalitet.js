@@ -30,6 +30,13 @@ function getPointRadius(threshold) {
   };
 }
 
+function checkResponseOK(response) {
+  if (!response.ok) {
+    throw Error(response.statusText);
+  }
+  return response.json();
+}
+
 function displayError(message) {
   document.getElementById('error-msg').innerHTML = message;
 }
@@ -55,38 +62,38 @@ const makeChart = (ctx, xs, ys) => {
       backgroundColor: color,
     };
   });
-
-  if (window.airQualityChart !== undefined) {
-    window.airQualityChart.destroy();
-  }
-  window.airQualityChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: xs,
-      datasets,
-    },
-    options: {
-      scales: {
-        yAxes: [{
-          scaleLabel: {
-            display: true,
-            labelString: 'µg/m³',
-          },
-        }],
+  if (window.airQualityChart === undefined) {
+    window.airQualityChart = new Chart(ctx, {
+      type: 'line',
+      options: {
+        scales: {
+          yAxes: [{
+            scaleLabel: {
+              display: true,
+              labelString: 'µg/m³',
+            },
+          }],
+        },
       },
-    },
-  });
+    });
+  }
+  window.airQualityChart.config.data = {
+    labels: xs,
+    datasets,
+  };
+  window.airQualityChart.update();
   return window.airQualityChart;
 };
 
 function submitNiluForm() {
   const body = new FormData(document.getElementById('nilu-form'));
   fetch('/_nilu_form', { method: 'POST', body })
-    .then((response) => {
-      if (!response.ok) {
-        throw Error(response.statusText);
+    .then(checkResponseOK)
+    .then((result) => {
+      if (result.error !== undefined) {
+        throw Error(result.error);
       }
-      return response.json();
+      return result;
     })
     .then((result) => {
       const ctx = document.getElementById('chart').getContext('2d');
@@ -113,12 +120,7 @@ async function initStations() {
   const body = new FormData();
   body.append('area', 'Oslo');
   return fetch('/_nilu_stations', { method: 'POST', body })
-    .then((response) => {
-      if (!response.ok) {
-        throw Error(response.statusText);
-      }
-      return response.json();
-    })
+    .then(checkResponseOK)
     .then((result) => {
       const select = document.getElementById('station-select');
       select.innerHTML = '';
