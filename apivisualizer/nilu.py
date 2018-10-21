@@ -1,5 +1,5 @@
 import requests
-from datetime import date
+import datetime as dt
 from typing import Optional, Dict, Iterable
 
 BASE_URL = "https://api.nilu.no"
@@ -28,20 +28,54 @@ def get_stations(area: Optional[str] = None):
     return [record['station'] for record in data]
 
 
-def get_daily_mean(startdate: date, enddate: date, station: str, components: Iterable[str]):
-    if enddate <= startdate:
+def _date_range(start_date: dt.date, end_date: dt.date):
+    next_date = start_date
+    while next_date < end_date:
+        yield next_date
+        next_date = next_date + dt.timedelta(days=1)
+
+
+def get_daily_mean(start_date: dt.date, end_date: dt.date, station: str, components: Iterable[str]):
+    if end_date <= start_date:
         raise ValueError('Start date must be before end date.')
     if not components:
         raise ValueError('At least one component must passed.')
     params = {'components': ';'.join(components)}
     path_parts = [
         "/stats/day",
-        startdate.isoformat(),
-        enddate.isoformat(),
+        start_date.isoformat(),
+        end_date.isoformat(),
         station
     ]
     data = _fetch_data('/'.join(path_parts), params=params)
+    xs = [str(d) for d in _date_range(start_date, end_date)]
+    component_ys = []
+    for element in data:
+        component = element['component']
+        ys = []
+        if not element['values']:
+            print('No values for component %s' % component)
+            continue
+        value_iterator = iter(element['values'])
+        value = next(value_iterator)
+        for date in xs:
+            if value['dateTime'].startswith(date):
+                ys.append(value['value'])
+                try:
+                    value = next(value_iterator)
+                except StopIteration:
+                    if len(xs) < len(ys):
+                        raise ValueError('X and Y length mismatch')
+                    while len(xs) > len(ys):
+                        ys.append(None)
+                    break
+            else:
+                ys.append(None)
+        component_ys.append({
+            'component': component,
+            'values': ys
+        })
     return {
-        record['component']: [value['value'] for value in record['values']]
-        for record in data
+        'xs': xs,
+        'ys': component_ys
     }
