@@ -1,6 +1,8 @@
+"""A Python interface to NILU's API for air quality measurements."""
+
 import requests
 import datetime as dt
-from typing import Optional, Dict, Iterable
+from typing import Optional, Dict, Iterable, List
 
 BASE_URL = "https://api.nilu.no"
 ISO_DATEFMT = "%Y-%m-%dT%H:%M:%S"
@@ -12,7 +14,7 @@ def _fetch_data(path: str, params: Optional[Dict[str, str]] = None):
     return response.json()
 
 
-def is_recent(time_str: str):
+def is_recent(time_str: str) -> bool:
     """Whether the timestamp is within the last day."""
     time_str = time_str[:19]  # Strip off time zone offset
     timestamp = dt.datetime.strptime(time_str, ISO_DATEFMT)
@@ -29,7 +31,21 @@ def get_components():
     return [record['component'] for record in data]
 
 
-def get_stations(area: Optional[str] = None):
+def get_stations(area: Optional[str] = None) -> List[str]:
+    """Get currently reporting measuring stations in an area.
+
+    Stations that have not reported any measurement in the last 24 hours
+    are filtered out.
+
+    Args:
+        area: Fetch only stations from this area. E.g. 'oslo', 'bergen'.
+
+    Returns:
+        A list of names of measuring stations.
+
+    Raises:
+        requests.exceptions.HTTPError if fetching NILU's API fails.
+    """
     params = None
     if area is not None:
         params = {'area': area}
@@ -40,7 +56,16 @@ def get_stations(area: Optional[str] = None):
     ]
 
 
-def _date_range(start_date: dt.date, end_date: dt.date):
+def _date_range(start_date: dt.date, end_date: dt.date) -> Iterable[dt.date]:
+    """Get a range of consecutive dates.
+
+    Args:
+        start_date: The start of the date range, inclusive.
+        end_date: The end of the date range, exclusive.
+
+    Yields:
+        All dates in the range.
+    """
     next_date = start_date
     while next_date < end_date:
         yield next_date

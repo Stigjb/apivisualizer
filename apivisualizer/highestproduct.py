@@ -2,7 +2,8 @@ import heapq
 from typing import List
 
 
-def _product(a, b, c):
+def _product(a: int, b: int, c: int) -> int:
+    """Multiply three integers together."""
     return a * b * c
 
 
@@ -21,8 +22,18 @@ def highest_product(numbers: List[int]) -> int:
     from itertools import combinations
     return max(a * b * c for (a, b, c) in combinations(numbers, 3))
 
-    The solution is either the product of the three biggest numbers, or
-    the product of the biggest number with the two smallest.
+    The solution is always either the product of the three biggest numbers,
+    or the product of the biggest number with the two smallest. This allows
+    us to find the answer in time linear with the input, using a heap data
+    structure to quickly find the three biggest and two smallest numbers in
+    the input.
+
+    Args:
+        numbers: The selection from which the factors of the highest
+            product will be found.
+
+    Raises:
+        ValueError if the input contains less than three items.
     """
     if len(numbers) < 3:
         raise ValueError("Input must contain at least three numbers.")
