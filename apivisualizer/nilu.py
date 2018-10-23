@@ -3,11 +3,20 @@ import datetime as dt
 from typing import Optional, Dict, Iterable
 
 BASE_URL = "https://api.nilu.no"
+ISO_DATEFMT = "%Y-%m-%dT%H:%M:%S"
 
 
 def _fetch_data(path: str, params: Optional[Dict[str, str]] = None):
     response = requests.get(BASE_URL + path, params=params)
+    response.raise_for_status()
     return response.json()
+
+
+def is_recent(time_str: str):
+    """Whether the timestamp is within the last day."""
+    time_str = time_str[:19]  # Strip off time zone offset
+    timestamp = dt.datetime.strptime(time_str, ISO_DATEFMT)
+    return dt.datetime.now() - timestamp < dt.timedelta(days=1)
 
 
 def get_areas():
@@ -25,7 +34,10 @@ def get_stations(area: Optional[str] = None):
     if area is not None:
         params = {'area': area}
     data = _fetch_data("/lookup/stations", params=params)
-    return [record['station'] for record in data]
+    return [
+        record['station'] for record in data
+        if is_recent(record['lastMeasurment'])
+    ]
 
 
 def _date_range(start_date: dt.date, end_date: dt.date):
@@ -54,7 +66,6 @@ def get_daily_mean(start_date: dt.date, end_date: dt.date, station: str, compone
         component = element['component']
         ys = []
         if not element['values']:
-            print('No values for component %s' % component)
             continue
         value_iterator = iter(element['values'])
         value = next(value_iterator)

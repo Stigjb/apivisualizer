@@ -1,14 +1,16 @@
 {% extends "layout.html" %}
 {% block title %}Luftkvalitet{% endblock %}
 {% block scripts %}
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
-  <script src="{{ url_for('static', filename='luftkvalitet.js') }}"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+  <script defer src="{{ url_for('static', filename='luftkvalitet.js') }}"></script>
 {% endblock %}
 {% block content %}
 <h1>Luftkvalitet</h1>
 <p>Luftkvalitet i en nylig periode på målestasjoner i Oslo.</p>
 <p>
     Datapunkter hvor døgnmiddelverdien overstiger timesnivåene for moderat helserisiko er markert med kryss.
+    Tidsrom uten tilgjengelige data vises som tomrom i grafen.
+    Kun stasjoner med tilgjengelige data fra det siste døgnet er tilgjengelige som valg i nedtrekksmenyen.
 </p>
 <form id='nilu-form' action='javascript:submitNiluForm();'>
     <div class="input-container">
@@ -41,12 +43,12 @@
     <input type='submit' />
 </form>
 <div id="error-msg"></div>
-<div><canvas id="chart"></canvas></div>
+<div class="chart-container"><canvas id="chart"></canvas></div>
 </p>
-    Dataene er gjort tilgjengelige av Norsk institutt for luftforskning (NILU) under Norsk lisens for
-    åpne data (NLOD). Se <a href="https://api.nilu.no">api.nilu.no</a> og <a href="http://luftkvalitet.info">
-    luftkvalitet.info</a>.
+    Dataene er gjort tilgjengelige av Norsk institutt for luftforskning (NILU). Se
+    <a href="https://api.nilu.no">api.nilu.no</a> og <a href="http://luftkvalitet.info">luftkvalitet.info</a>.
     Visualiseringen er gjort ved hjelp av JavaScriptbiblioteket <a href="https://chartjs.org">Chart.js</a>,
     tilgjengelig under MIT-lisensen.
 </p>
+<p>Kildekoden for denne nettsiden finnes på <a href="https://github.com/stigjb/apivisualizer">Github</a>.</p>
 {% endblock %}

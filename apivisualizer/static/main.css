@@ -1,17 +1,12 @@
 body {
-    width: 800px;
+    width: 90vw;
+    max-width: 690px;
     margin: auto;
     font-family: Verdana, Geneva, Tahoma, sans-serif
 }
 
 h1 {
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-}
-
-#nilu-form {
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
 }
 
 fieldset {
@@ -26,6 +21,22 @@ input[type="submit"] {
     flex: 1 
 }
 
+#nilu-form {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
 div#error-msg {
     color: #a40000;
+}
+
+div.input-container {
+    display: flex;
+    flex-direction: column;
+    margin: 5px 10px;
+}
+
+div.chart-container {
+    height: 60vh;
 }

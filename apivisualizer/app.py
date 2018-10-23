@@ -1,6 +1,7 @@
 import datetime as dt
 
 from flask import Flask, render_template, request, jsonify, redirect
+from requests.exceptions import HTTPError
 
 from apivisualizer.highestproduct import highest_product
 from apivisualizer.nilu import get_daily_mean, get_stations
@@ -45,20 +46,18 @@ def _highest_product():
 
 @app.route('/_nilu_form', methods=['POST'])
 def _nilu_form():
-    print(request.form)
     station = request.form['station']
     components = request.form.getlist('component[]')
     start_date = date_from_isoformat(request.form['startDate'])
     end_date = date_from_isoformat(request.form['endDate'])
     end_date += dt.timedelta(days=1)
-
+    if end_date - start_date > dt.timedelta(days=30):
+        return jsonify(error="Maximum length of time period is 30 days")
     try:
         result = get_daily_mean(start_date, end_date, station, components)
-    except ValueError as err:
-        print(err)
+    except (ValueError, HTTPError) as err:
         return jsonify(error=str(err))
     if not result['ys']:
-        print('no data found')
         return jsonify(error='No data found for query')
 
     return jsonify(xs=result['xs'], ys=result['ys'])
@@ -66,8 +65,21 @@ def _nilu_form():
 
 @app.route('/_nilu_stations', methods=['POST'])
 def _nilu_stations():
-    area = request.form['area']
-    return jsonify(stations=get_stations(area))
+    try:
+        area = request.form['area']
+        return jsonify(stations=get_stations(area))
+    except HTTPError as e:
+        print("Error from NILU's API: %s" % str(e))
+        # Return a hard coded list of stations when the API is down
+        return jsonify(stations=[
+            'Manglerud',
+            'Kirkeveien',
+            'Breivoll',
+            'Bygdøy Alle',
+            'Sofienbergparken',
+            'Hjortnes',
+            'Aker Sykehus'
+        ])
 
 
 if __name__ == '__main__':

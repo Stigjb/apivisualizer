@@ -1,9 +1,9 @@
 /// <reference path='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js' />
 /* global Chart */
 
-const lineDefaults = Chart.defaults.global.elements.line;
-lineDefaults.tension = 0.2;
-lineDefaults.fill = false;
+Object.assign(Chart.defaults.global.elements.line, { tension: 0.2, fill: false });
+Chart.defaults.global.title.display = true;
+Chart.defaults.global.maintainAspectRatio = false;
 
 const colors = ['#73d216', '#3465a4', '#cc0000'];
 const thresholds = {
@@ -13,21 +13,11 @@ const thresholds = {
 };
 
 function getPointStyle(threshold) {
-  return (value) => {
-    if (value < threshold) {
-      return 'circle';
-    }
-    return 'crossRot';
-  };
+  return value => value < threshold ? 'circle' : 'crossRot';
 }
 
 function getPointRadius(threshold) {
-  return (value) => {
-    if (value < threshold) {
-      return 3;
-    }
-    return 6;
-  };
+  return value => value < threshold ? 3 : 6;
 }
 
 function checkResponseOK(response) {
@@ -81,6 +71,8 @@ const makeChart = (ctx, xs, ys) => {
     labels: xs,
     datasets,
   };
+  const stationName = document.getElementById('station-select').value;
+  window.airQualityChart.config.options.title.text = `Målestasjon: ${stationName}`;
   window.airQualityChart.update();
   return window.airQualityChart;
 };
