@@ -1,11 +1,13 @@
 {% extends "layout.html" %}
-{% block title %}Hello{% endblock %}
+{% block title %}Highest product{% endblock %}
 {% block scripts %}
   <script defer src="{{ url_for('static', filename='product.js') }}"></script>
 {% endblock %}
 {% block content %}
-  <h1>Highest product of three integers</h1>
-  <p>Arithmetic as a service&trade;</p>
+  <h1>Highest product between three numbers in a list of integers</h1>
+  <p>The result is calculated using an efficient algorithm based on a heap
+    data structure. Time complexity is linear in the length of the input.
+  </p>
   <div>
     <p>Enter at least three integers in the input field below, separated by spaces.</p>
     <form id="numbers-input" action="javascript:formAction();">

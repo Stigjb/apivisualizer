@@ -19,14 +19,15 @@ def highest_product(numbers: List[int]) -> int:
     A naïve solution that is simple and correct, but doesn't scale well with
     input length is to simply test all combinations of three numbers:
 
-    from itertools import combinations
-    return max(a * b * c for (a, b, c) in combinations(numbers, 3))
+      from itertools import combinations
+      return max(a * b * c for (a, b, c) in combinations(numbers, 3))
 
-    The solution is always either the product of the three biggest numbers,
-    or the product of the biggest number with the two smallest. This allows
-    us to find the answer in time linear with the input, using a heap data
-    structure to quickly find the three biggest and two smallest numbers in
-    the input.
+    We can do better than this. The solution will always include the biggest
+    number in the input. The remaining two numbers will either be the next
+    two biggest numbers, or the two smallest numbers. This allows us to find
+    the answer in time linear with the input, using a heap data structure to
+    quickly find the three biggest and two smallest numbers in the input and
+    compare only two products.
 
     Args:
         numbers: The selection from which the factors of the highest
