@@ -17,7 +17,12 @@ def _fetch_data(path: str, params: Optional[Dict[str, str]] = None):
 def is_recent(time_str: str) -> bool:
     """Whether the timestamp is within the last day."""
     time_str = time_str[:19]  # Strip off time zone offset
-    timestamp = dt.datetime.strptime(time_str, ISO_DATEFMT)
+    try:
+        timestamp = dt.datetime.strptime(time_str, ISO_DATEFMT)
+    except ValueError:
+        # Malformed timestamps sometimes occur in the API
+        # Exclude these stations
+        return False
     return dt.datetime.now() - timestamp < dt.timedelta(days=1)
 
 
